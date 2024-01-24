@@ -1,7 +1,7 @@
 import { ITools, TSomeObject } from './types';
 
 export class Tools implements ITools {
-  multipartUploadFile(
+  multipartRelatedUploadFile(
     url: string,
     file: { blob: GoogleAppsScript.Base.Blob; mimeType: string; name: string },
     options?: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions,
@@ -42,6 +42,45 @@ export class Tools implements ITools {
     const httpResponse = UrlFetchApp.fetch(url, _options);
     return httpResponse;
   }
+
+  multipartFormDataUploadFile(
+    url: string,
+    file: { blob: GoogleAppsScript.Base.Blob; mimeType: string; name: string },
+    options?: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions,
+    metadata?: { [key: string]: string },
+  ): GoogleAppsScript.URL_Fetch.HTTPResponse {
+    const _metadata = Object.assign(
+      {
+        filename: file.name,
+      },
+      metadata,
+    );
+    const boundary = Utilities.getUuid();
+    let data = '';
+    for (const i in _metadata) {
+      data += '--' + boundary + '\r\n';
+      data += 'Content-Disposition: form-data; name="' + i + '"; \r\n\r\n' + _metadata[i] + '\r\n';
+    }
+    data += '--' + boundary + '\r\n';
+    data += 'Content-Disposition: form-data; name="file"; filename="' + file.name + '"\r\n';
+    data += 'Content-Type:' + file.mimeType + '\r\n\r\n';
+    const payload = Utilities.newBlob(data)
+      .getBytes()
+      .concat(file.blob.getBytes())
+      .concat(Utilities.newBlob('\r\n--' + boundary + '--').getBytes());
+    const _options = Object.assign(
+      {
+        method: 'put',
+        contentType: 'multipart/form-data; boundary=' + boundary,
+        payload: payload,
+        muteHttpExceptions: true,
+      },
+      options,
+    );
+    const httpResponse = UrlFetchApp.fetch(url, _options);
+    return httpResponse;
+  }
+
   serialize(obj: TSomeObject, prefix?: string): string {
     const str: string[] = [];
     for (const p in obj) {

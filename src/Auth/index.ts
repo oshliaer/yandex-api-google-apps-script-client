@@ -76,8 +76,4 @@ export class Auth implements IAuth {
       );
     }
   }
-
-  get Disk() {
-    return Disk;
-  }
 }

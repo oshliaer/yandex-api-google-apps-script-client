@@ -15,7 +15,7 @@
 Реализуйте фабрику, которая будет возвращать настроенный сервис:
 
 ```js
-function getYAndexAuthInstance() {
+function getYandexAuthInstance() {
   const instance = new YandexService.Auth({
     appsScriptProjectId: '{Идентификатор проекта}',
     storage: PropertiesService.getScriptProperties(),
@@ -24,16 +24,18 @@ function getYAndexAuthInstance() {
 }
 ```
 
-Получите Redirect URI. Напрмиер, вывести в консоль:
+Получите Redirect URI. Например, вывести в консоль:
 
 ```js
 // Выводит в консоль Redirect URI для регистрации приложения
 function printRedirectUri() {
-  const { redirectUri } = getYAndexAuthInstance();
+  const { redirectUri } = getYandexAuthInstance();
 
   console.log(redirectUri);
 }
 ```
+
+> `<$ https://script.google.com/macros/d/{Идентификатор проекта}/usercallback`
 
 Перейдите по адресу регистрации новго приложения. Введите требуемые данные, укажите полученный Redirect URI.
 
@@ -42,7 +44,7 @@ function printRedirectUri() {
 Обновите фабрику так:
 
 ```js
-function getYAndexAuthInstance() {
+function getYandexAuthInstance() {
   const instance = new YandexService.Auth({
     appsScriptProjectId: '{Идентификатор проекта}',
     clientId: '{ClientId}',
@@ -64,14 +66,14 @@ function getYAndexAuthInstance() {
 // Обрабатывает вызова Yandex Redirect Auth
 // Сохраняет токен в свойства проекта
 function doYandexAuthRedirect(e) {
-  return getYAndexAuthInstance().defaultAuthCallbackHandler(e);
+  return getYandexAuthInstance().defaultAuthCallbackHandler(e);
 }
 ```
 
 Укажите имя этой функции как свойство `callbackFunctionName`;
 
 ```js
-function getYAndexAuthInstance() {
+function getYandexAuthInstance() {
   const instance = new YandexService.Auth({
     appsScriptProjectId: '{Идентификатор проекта}',
     clientId: '{ClientId}',
@@ -88,10 +90,12 @@ function getYAndexAuthInstance() {
 ```js
 // Выводит в консоль ссылку для авторизации
 function printAuthUri() {
-  const { authorizeUri } = getYAndexAuthInstance();
+  const { authorizeUri } = getYandexAuthInstance();
   console.log(authorizeUri);
 }
 ```
+
+> `<$ https://oauth.yandex.ru/authorize?state=xxx_yyy_zzz&client_id=ClientID&response_type=code`
 
 Перейдя по ссылке в браузере, вы должны получить сообщение "Авторизация прошла успешно".
 
@@ -100,10 +104,19 @@ function printAuthUri() {
 ```js
 // Выводит в консоль токен
 function printToken() {
-  const { token } = getYAndexAuthInstance();
+  const { token } = getYandexAuthInstance();
   console.log(token);
 }
 ```
+
+> ```json
+> {
+>   "access_token": "xxx_yyy_zzz",
+>   "expires_in": 31531937,
+>   "refresh_token": "1:YYY:ZZZ:XXX",
+>   "token_type": "bearer"
+> }
+> ```
 
 ## Как добавить новые возможности
 
