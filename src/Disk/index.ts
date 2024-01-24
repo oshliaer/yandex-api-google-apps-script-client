@@ -37,6 +37,6 @@ class Resources implements Iv1ResourcesClass {
 
   uploadFile = (params: IDiskV1ResourcesUploadRequest, file: IUploadFile) => {
     const d = this.upload(params);
-    return this.#auth.tools.multipartUploadFile(d.href, file);
+    return this.#auth.tools.multipartFormDataUploadFile(d.href, file);
   };
 }
